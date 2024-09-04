@@ -1,4 +1,4 @@
-from pathlib import Path
+from   从 pathlib import Path
 import seaborn as sns
 
 # check if "scratch" path exists in the home directory
@@ -459,7 +459,7 @@ def femto_results_rul_fig(
     axes_list = [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]
 
     for ax in axes_list:
-        ax.grid(b=None)
+        ax.grid(False)
 
     plt.rcParams["axes.titlepad"] = 7
 
@@ -741,39 +741,39 @@ def ims_results_rul_fig(
 
 
 def main():
-    logger = logging.getLogger(__name__)
-    logger.info("making figures from results")
+    logger = logging.getLogger(__name__)`logger` 是 `logging` 模块中获取的名为 `__name__` 的日志记录器。
+    logger.info("making figures from results")日志记录器会输出以下信息：“从结果生成图表”。
 
     sns.set(font_scale=1.0, style="whitegrid", font="DejaVu Sans")
 
-    # csv result locations
-    path_results = root_dir / "models/final/"
-    path_save_loc = root_dir / "reports/figures/"
+    # csv result locations   # 结果文件的CSV格式存储位置
+    path_results = root_dir / "models/final/"`path_results` 表示一个路径对象，指向根目录下的 "models/final/" 文件夹。
+    path_save_loc = root_dir / "reports/figures/"`path_save_loc` 变量的值为根目录下的 "reports/figures/" 目录。
 
-    loss_function_percentage_fig(
-        path_results / "ims_count_results.csv",
-        path_results / "femto_count_results.csv",
-        path_save_loc / "loss_function_percentages.pdf",
+    loss_function_percentage_fig(这是一个尚未定义的函数名称，可能没有具体的含义或功能。如果你有更多的上下文信息，我可以帮助你更准确地解释这个函数。
+        path_results / "ims_count_results.csv",路径结果为“path\_results/ims\_count\_results.csv”。
+        path_results / "femto_count_results.csv",路径结果为“femto\_count\_results.csv”。
+        path_save_loc / "loss_function_percentages.pdf",路径保存位置为“loss\_function\_percentages.pdf”。
     )
 
-    loss_function_correlation_fig(
-        path_results / "ims_correlation_results.csv",
-        path_results / "femto_correlation_results.csv",
-        path_save_loc / "correlations.pdf",
+    loss_function_correlation_fig(损失函数相关性图（loss\_function\_correlation\_fig）
+        path_results / "ims_correlation_results.csv",路径结果为“ims_correlation_results.csv”。
+        path_results / "femto_correlation_results.csv",路径结果为“femto\_correlation\_results.csv”。
+        path_save_loc / "correlations.pdf",路径保存位置为“correlations.pdf”。
     )
 
-    early_stop_distribution_fig(
-        path_results / "ims_results_filtered.csv",
-        path_results / "femto_results_filtered.csv",
-        path_save_loc / "epoch_stop_dist.pdf",
+    early_stop_distribution_fig(这是一个尚未定义的函数，需要提供更多的上下文信息才能确定其含义和功能。如果您有更多的上下文或代码片段，我可以帮助您更准确地翻译它。
+        path_results / "ims_results_filtered.csv",路径结果为“ims_results_filtered.csv”。
+        path_results / "femto_results_filtered.csv",路径结果为“femto\_results\_filtered.csv”。
+        path_save_loc / "epoch_stop_dist.pdf",路径保存位置为 "/ 批次停止距离.pdf"
         dpi=150,
     )
 
-    # create the plots of the top models with predictions on them
-    folder_data_ims = root_dir / "data/processed/IMS/"
-    folder_data_femto = root_dir / "data/processed/FEMTO/"
+    # create the plots of the top models with predictions on them为排名靠前的模型创建带有预测结果的图表。
+    folder_data_ims = root_dir / "data/processed/IMS/"文件夹数据IMS = 根目录/“数据/处理后的/IMS”
+    folder_data_femto = root_dir / "data/processed/FEMTO/"文件夹数据FEMTO = 根目录 / "数据/处理后的/FEMTO/"
 
-    # need model for loading checkpoint
+    # need model for loading checkpoint需要加载模型的检查点。
     copyfile(path_results / "top_models_femto/model.py", "model.py")
 
     # make PRONOSTIA (FEMTO) rul plots
@@ -781,37 +781,37 @@ def main():
     model_name = df_top["model_checkpoint_name"][0]  # select top model
 
     femto_results_rul_fig(
-        root_dir / "models/final/top_models_femto",
+        root_dir / "models/final/top_models_femto",根目录为“models/final/top_models_femto”
         model_name,
         folder_data_femto,
-        path_save_loc / "femto_rul_results.pdf",
+        path_save_loc / "femto_rul_results.pdf",路径保存位置为“femto_rul_results.pdf”。
         dpi=150,
     )
 
     os.remove("model.py")  # delete model.py that was copied to root dir
 
-    # need model for loading checkpoint
+    # need model for loading checkpoint需要加载模型的检查点。
     copyfile(path_results / "top_models_ims/model.py", "model.py")
 
-    # make IMS rul plots
+    # make IMS rul plots制作IMS规则图表
     df_top = pd.read_csv(root_dir / "models/final/ims_results_filtered.csv")
     model_name = df_top["model_checkpoint_name"][0]  # select top model
-    ims_results_rul_fig(
-        root_dir / "models/final/top_models_ims",
+    ims_results_rul_fig(   这是一个尚未定义的函数，需要提供完整的上下文才能确定其含义和功能。请提供更多信息或上下文以便我可以更好地为您提供帮助。
+        root_dir / "models/final/top_models_ims",根目录为“models/final/top_models_ims”
         model_name,
         folder_data_ims,
-        path_save_loc / "ims_rul_results.pdf",
+        path_save_loc / "ims_rul_results.pdf",路径保存位置为“ims_rul_results.pdf”。
         dpi=150,
     )
 
     os.remove("model.py")  # delete model.py that was copied to root dir
 
 
-if __name__ == "__main__":
-    log_fmt = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+if __name__ == "__main__":   如果 `__name__` 等于 "__main__"：
+    log_fmt = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"`log_fmt` 的值为："%(asctime)s - %(name)s - %(levelname)s - %(message)s"。
     logging.basicConfig(level=logging.INFO, format=log_fmt)
 
-    # not used in this stub but often useful for finding various files
+    # not used in this stub but often useful for finding various files在这个示例中尚未使用，但在查找各种文件时通常很有用。
     root_dir = Path(__file__).resolve().parents[2]
 
     main()
