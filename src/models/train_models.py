@@ -523,7 +523,7 @@ def train(
         loss_avg_mse = np.mean(train_losses_mse)
 
         # save the results to a pandas dataframe
-        df = df.append(
+        df = pd.concat([
             pd.DataFrame(
                 [
                     [
@@ -536,7 +536,7 @@ def train(
                 ],
                 columns=["epoch", "loss", "val_loss", "loss_mse", "val_loss_mse"],
             )
-        )
+        ])
 
         early_stopping(val_loss, net)
 
@@ -785,7 +785,7 @@ for i, param in enumerate(param_list):
         results_list_update = results_list + [results_dict[i] for i in results_dict]
         df_temp = pd.DataFrame([results_list_update], columns=col_update)
 
-        df_results = df_results.append(df_temp)
+        df_results = df_results._append(df_temp)
 
         # update csv of results
         df_results.to_csv(
