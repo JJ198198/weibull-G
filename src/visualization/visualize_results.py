@@ -627,7 +627,7 @@ def ims_results_rul_fig(
     axes_list = [ax1, ax2, ax3, ax4]
 
     for ax in axes_list:
-        ax.grid(b=None)
+        ax.grid(False)
 
     ###### TEST DATA #####
     net.eval()
