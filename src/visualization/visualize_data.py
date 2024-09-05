@@ -161,6 +161,103 @@ def plot_freq_peaks(
         plt.show()
 
 
+# def plot_spectogram_with_binned(
+#     df_spec, labels_dict, path_save_name=Path("dummy_folder"), vmax_factor1=0.1, vmax_factor2=0.9, dpi=150, save_plot=True
+# ):
+#     color_scheme = "inferno"
+
+#     days = []
+#     for i in labels_dict:
+#         days.append(labels_dict[i][4])
+
+#     days = sorted(days)
+
+#     fig, ax = plt.subplots(
+#         1,
+#         2,
+#         figsize=(11, 4),
+#         dpi=dpi,
+#     )
+
+#     vmax_val = np.max(df_spec.to_numpy().flatten())
+#     ax[0].pcolormesh(
+#         days,
+#         df_spec.index,
+#         df_spec,
+#         cmap=color_scheme,
+#         vmax=vmax_val * vmax_factor1,
+#         shading="auto",
+#     )
+
+#     ax[0].set_yticks([0, 1000, 2000, 3000, 4000, 5000])
+#     ax[0].set_yticklabels(["", 1000, 2000, 3000, 4000, 5000])
+#     ax[0].set_ylabel("Frequency (Hz)")
+#     ax[0].set_xlabel("Runtime (days)")
+#     ax[0].tick_params(axis="both", which="both", length=0)
+
+#     ax[0].text(
+#         0.01,
+#         0.99,
+#         "(a)",
+#         verticalalignment="top",
+#         horizontalalignment="left",
+#         transform=ax[0].transAxes,
+#         color="white",
+#         fontsize=12,
+#     )
+
+#     ##### BINED SPECTROGRAM #####
+#     bucket_size = 500
+
+#     samples = df_spec.shape[1]
+
+#     df_temp = df_spec.iloc[:10000]
+#     a = np.array(df_temp)  # make numpy array
+#     print(np.shape(a))
+
+#     # get the y-axis (frequency values)
+#     y = np.array(df_temp.index)
+#     y = np.max(y.reshape(-1, bucket_size), axis=1)
+#     y = list(y.round().astype("int")[::2])
+#     y.insert(0, 0)
+#     plt.box(on=None)
+
+#     # get the max value for each bucket
+#     # https://stackoverflow.com/a/15956341/9214620
+#     max_a = np.max(a.reshape(-1, bucket_size, samples), axis=1)
+
+#     ax[1].pcolormesh(
+#         days,
+#         np.arange(0, 21),
+#         max_a,
+#         cmap=color_scheme,
+#         vmax=vmax_val * vmax_factor2,
+#         shading="auto",
+#     )
+#     ax[1].set_yticks(np.arange(1.5, 20.5, 2))
+#     ax[1].set_yticklabels(list(np.arange(2, 21, 2)))
+#     ax[1].tick_params(axis="both", which="both", length=0)
+
+#     ax[1].set_xlabel("Runtime (days)")
+#     ax[1].set_ylabel("Frequency Bin")
+
+#     ax[1].text(
+#         0.01,
+#         0.99,
+#         "(b)",
+#         verticalalignment="top",
+#         horizontalalignment="left",
+#         transform=ax[1].transAxes,
+#         color="white",
+#         fontsize=12,
+#     )
+
+#     sns.despine(left=True, bottom=True, right=True)
+#     if save_plot:
+#         plt.savefig(path_save_name, dpi=dpi, bbox_inches="tight")
+#     else:
+#         plt.show()
+
 def plot_spectogram_with_binned(
     df_spec, labels_dict, path_save_name=Path("dummy_folder"), vmax_factor1=0.1, vmax_factor2=0.9, dpi=150, save_plot=True
 ):
@@ -168,7 +265,13 @@ def plot_spectogram_with_binned(
 
     days = []
     for i in labels_dict:
-        days.append(labels_dict[i][4])
+        if len(labels_dict[i]) >= 5:
+            days.append(labels_dict[i][4])
+        else:
+            print(f"Warning: Index {i} in labels_dict does not have enough elements.")
+
+    if not days:
+        raise ValueError("No valid days found in labels_dict.")
 
     days = sorted(days)
 
@@ -212,30 +315,50 @@ def plot_spectogram_with_binned(
     samples = df_spec.shape[1]
 
     df_temp = df_spec.iloc[:10000]
-    a = np.array(df_temp)  # make numpy array
-    print(np.shape(a))
+    a = np.array(df_temp)  # 转换为 numpy 数组
+    print("Original data shape:", np.shape(a))
 
-    # get the y-axis (frequency values)
+    # 获取 y 轴（频率值）
     y = np.array(df_temp.index)
-    y = np.max(y.reshape(-1, bucket_size), axis=1)
-    y = list(y.round().astype("int")[::2])
-    y.insert(0, 0)
-    plt.box(on=None)
+    y_binned = np.max(y.reshape(-1, bucket_size), axis=1)
+    y_binned = list(y_binned.round().astype("int"))
+    y_binned.insert(0, 0)  # 添加零行
+    print("Binned y shape:", len(y_binned))
 
-    # get the max value for each bucket
-    # https://stackoverflow.com/a/15956341/9214620
+    # 获取每个桶的最大值
     max_a = np.max(a.reshape(-1, bucket_size, samples), axis=1)
+    print("Binned max_a shape:", np.shape(max_a))
+
+    # 调整坐标轴的维度
+    days_adjusted = np.array(days)
+    y_adjusted = np.array(y_binned)
+
+    # 确保调整后的数据矩阵和坐标轴长度匹配
+    max_a_adjusted = np.zeros((len(y_adjusted) - 1 , len(days_adjusted) ))
+    max_a_adjusted[:max_a.shape[0], :max_a.shape[1]] = max_a
+
+    # 添加额外的列来匹配 days_adjusted 的长度
+    days_adjusted = np.append(days_adjusted, days_adjusted[-1] + (days_adjusted[1] - days_adjusted[0]))
+
+    # 检查维度
+    print("Days adjusted length:", len(days_adjusted))
+    print("Y adjusted length:", len(y_adjusted))
+    print("Max A adjusted shape:", np.shape(max_a_adjusted))
+
+    if max_a_adjusted.shape[0] != len(y_adjusted) - 1 or max_a_adjusted.shape[1] != len(days_adjusted) - 1:
+        raise ValueError("Dimensions of the adjusted data matrix do not match the dimensions of the axes.")
 
     ax[1].pcolormesh(
-        days,
-        np.arange(0, 21),
-        max_a,
+        days_adjusted,
+        y_adjusted,
+        max_a_adjusted,
         cmap=color_scheme,
         vmax=vmax_val * vmax_factor2,
         shading="auto",
     )
-    ax[1].set_yticks(np.arange(1.5, 20.5, 2))
-    ax[1].set_yticklabels(list(np.arange(2, 21, 2)))
+
+    ax[1].set_yticks(np.arange(1.5, len(y_adjusted), 2))
+    ax[1].set_yticklabels(np.arange(2, len(y_adjusted), 2))
     ax[1].tick_params(axis="both", which="both", length=0)
 
     ax[1].set_xlabel("Runtime (days)")
@@ -257,8 +380,7 @@ def plot_spectogram_with_binned(
         plt.savefig(path_save_name, dpi=dpi, bbox_inches="tight")
     else:
         plt.show()
-
-
+        
 def weibull_pdf(t, eta, beta):
     "weibull PDF function"
     return (
