@@ -1,4 +1,4 @@
-import   进口 numpy as np
+import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy import signal, fftpack
@@ -658,7 +658,7 @@ def main():
     # WEIBULL CDF/PDF PLOT
     plot_weibull_example(
         beta=2.0,
-        eta=100,   y=100，
+        eta=100,
         path_save_name=path_save_loc / "weibull_cdf_pdf_example.pdf",
         dpi=300,
     )
@@ -666,30 +666,30 @@ def main():
     ######################
     # TIME-DOMAIN, FREQ DOMAIN PLOT
     folder_1st = path_raw_data / "1st_test"
-    col_names = [   Col_names = [
-        "b1_ch1",   b1_ch1》
-        "b1_ch2",   “b1_ch2”，
-        "b2_ch3",   “b2_ch3”
-        "b2_ch4",   “b2_ch4”
-        "b3_ch5",   “b3_ch5”
-        "b3_ch6",   “b3_ch6”
-        "b4_ch7",   “b4_ch7”
-        "b4_ch8",   “b4_ch8”
+    col_names = [
+        "b1_ch1",
+        "b1_ch2",
+        "b2_ch3",
+        "b2_ch4",
+        "b3_ch5",
+        "b3_ch6",
+        "b4_ch7",
+        "b4_ch8",
     ]
 
     df = pd.read_csv(folder_1st / "2003.10.22.12.06.24", sep="\t", names=col_names)
     x, y, xf, yf = create_fft(
         df,
-        y_name="b1_ch2",   y_name=“b1_ch2”，
+        y_name="b1_ch2",
         sample_freq=20480.0,
-        window="kaiser",   參= "皇帝"
-        beta=3,   β= 3,
+        window="kaiser",
+        beta=3,
     )
     create_time_frequency_plot(
         x,
         y,
         xf,
-        yf,   YF，
+        yf,
         save_plot=True,
         save_name=path_save_loc / "time_freq_domain_example.pdf",
     )
@@ -708,19 +708,15 @@ def main():
         folder_data_femto,
         path_save_name=path_save_loc / "femto_spectrograms_processed_data.png",
         dpi=300,
-        vmax_val=0.15,   vmax_val=0.15，
+        vmax_val=0.15,
     )
 
 
-if __name__ == "__main__":   如果 `__name__` 等于 "__main__"   “__main__”：
-    log_fmt = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"`log_fmt` 的值为："%(asctime)s - %(name)s - %(levelname)s - %(message)s"。
+if __name__ == "__main__":
+    log_fmt = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     logging.basicConfig(level=logging.INFO, format=log_fmt)
 
-    # not used in this stub but often useful for finding various files在这个示例中尚未使用，但在查找各种文件时通常很有用。
-    root_dir = Path(__file__).resolve().parents[2]`root_dir` 变量的值为当前文件所在的目录的上级目录的上级目录。这可以通过以下代码实现：
-
-`root_dir = Path(__file__).resolve().parents[2]`
-
-其中，`Path(__file__)` 用于获取当前文件的路径，`resolve()` 方法用于将文件路径解析为操作系统的绝对路径，`parents` 方法用于获取文件的上级目录，`[2]` 表示获取上级目录中的第二个目录（即上级目录的上级目录）。
+    # not used in this stub but often useful for finding various files
+    root_dir = Path(__file__).resolve().parents[2]
 
     main()
